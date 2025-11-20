@@ -44,6 +44,7 @@
 <script>const url=new URL(location);document.querySelectorAll(".lang-switcher a").forEach((e=>{e.addEventListener("click",(r=>{r.preventDefault(),url.searchParams.set("lang",e.textContent.trim().toLowerCase()),localStorage.setItem("preferredLang",e.textContent.trim().toLowerCase()),location.href=url}))})),!url.searchParams.has("lang")&&localStorage.preferredLang&&(url.searchParams.set("lang",localStorage.preferredLang),location.replace(url))</script>
 <p>.</p>
 </div></div>
+<p>Bu Bosh sahifa</p>
 </main>
 <script>lucide.createIcons({attrs:{class:["svg-icon"]}})</script>
 </body>
