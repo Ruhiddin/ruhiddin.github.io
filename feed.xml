@@ -3,7 +3,7 @@
     <title>Ruhiddin&#39;s Garden</title>
     <link href="https://Ruhiddin.github.io//feed.xml" rel="self" />
     <link href="https://Ruhiddin.github.io/" />
-    <updated>2025-11-20T15:56:38Z</updated>
+    <updated>2025-11-21T05:54:38Z</updated>
     <id>https://Ruhiddin.github.io/</id>
         <entry>
             <title>
@@ -436,6 +436,28 @@
             <id>https://Ruhiddin.github.io//bitherd/en/home-page/</id>
             <content type="html">
                 &lt;div class=&quot;transclusion internal-embed is-loaded&quot;&gt;&lt;div class=&quot;markdown-embed&quot;&gt;
+&lt;div class=&quot;lang-switcher&quot;&gt;
+  &lt;a href=&quot;https://ruhiddin.github.io/?lang=en&quot; class=&quot;{{currentLang === &#39;en&#39; ? &#39;active&#39; : &#39;&#39;}}&quot;&gt;EN&lt;/a&gt;
+  &lt;a href=&quot;https://ruhiddin.github.io/?lang=uz&quot; class=&quot;{{currentLang === &#39;uz&#39; ? &#39;active&#39; : &#39;&#39;}}&quot;&gt;O‘Z&lt;/a&gt;
+&lt;/div&gt;
+&lt;script&gt;
+// Persist choice + reload with param
+const url = new URL(location);
+document.querySelectorAll(&#39;.lang-switcher a&#39;).forEach(a =&gt; {
+  a.addEventListener(&#39;click&#39;, e =&gt; {
+    e.preventDefault();
+    url.searchParams.set(&#39;lang&#39;, a.textContent.trim().toLowerCase());
+    localStorage.setItem(&#39;preferredLang&#39;, a.textContent.trim().toLowerCase());
+    location.href = url;
+  });
+});
+
+// Auto-detect preferred language on first visit
+if (!url.searchParams.has(&#39;lang&#39;) &amp;&amp; localStorage.preferredLang) {
+  url.searchParams.set(&#39;lang&#39;, localStorage.preferredLang);
+  location.replace(url);
+}
+&lt;/script&gt;
 &lt;/div&gt;&lt;/div&gt;
 &lt;h1 id=&quot;this-is-home-page&quot; tabindex=&quot;-1&quot;&gt;This is home page&lt;/h1&gt;
 
@@ -447,10 +469,34 @@
                 HOME_PAGE-BOSH SAHIFA
                 
             </title>
-            <updated>2025-11-20T15:42:31.470Z</updated>
+            <updated>2025-11-21T05:54:01.468Z</updated>
             <id>https://Ruhiddin.github.io//</id>
             <content type="html">
-                &lt;p&gt;Bu Bosh sahifa.&lt;/p&gt;
+                &lt;div class=&quot;transclusion internal-embed is-loaded&quot;&gt;&lt;div class=&quot;markdown-embed&quot;&gt;
+&lt;div class=&quot;lang-switcher&quot;&gt;
+  &lt;a href=&quot;https://ruhiddin.github.io/?lang=en&quot; class=&quot;{{currentLang === &#39;en&#39; ? &#39;active&#39; : &#39;&#39;}}&quot;&gt;EN&lt;/a&gt;
+  &lt;a href=&quot;https://ruhiddin.github.io/?lang=uz&quot; class=&quot;{{currentLang === &#39;uz&#39; ? &#39;active&#39; : &#39;&#39;}}&quot;&gt;O‘Z&lt;/a&gt;
+&lt;/div&gt;
+&lt;script&gt;
+// Persist choice + reload with param
+const url = new URL(location);
+document.querySelectorAll(&#39;.lang-switcher a&#39;).forEach(a =&gt; {
+  a.addEventListener(&#39;click&#39;, e =&gt; {
+    e.preventDefault();
+    url.searchParams.set(&#39;lang&#39;, a.textContent.trim().toLowerCase());
+    localStorage.setItem(&#39;preferredLang&#39;, a.textContent.trim().toLowerCase());
+    location.href = url;
+  });
+});
+
+// Auto-detect preferred language on first visit
+if (!url.searchParams.has(&#39;lang&#39;) &amp;&amp; localStorage.preferredLang) {
+  url.searchParams.set(&#39;lang&#39;, localStorage.preferredLang);
+  location.replace(url);
+}
+&lt;/script&gt;
+&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;Bu Bosh sahifa.&lt;/p&gt;
 
             </content>
             <link href="https://Ruhiddin.github.io//" />
