@@ -13,7 +13,7 @@
 <script src="https://fastly.jsdelivr.net/npm/alpinejs@3.11.1/dist/cdn.min.js" async></script>
 
 <style>
-/* Modern Language Switcher – 2025 Fluent UI Style */
+/* Modern Language Switcher – Clean URLs Edition (2025) */
 .language-switcher {
   position: fixed;
   top: 16px;
@@ -21,7 +21,7 @@
   z-index: 10000;
   display: flex;
   gap: 8px;
-  background: rgba(255, 255, 255, 0.9); /* Light mode fallback */
+  background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(20px);
   padding: 8px 16px;
   border-radius: 12px;
@@ -73,7 +73,7 @@
   color: #111827;
 }
 
-/* Dark mode support */
+/* Dark mode */
 @media (prefers-color-scheme: dark) {
   .language-switcher {
     background: rgba(17, 24, 39, 0.9);
@@ -88,7 +88,7 @@
   }
 }
 
-/* Translation banner (shows if no Uzbek file) */
+/* Translation banner */
 .translation-banner {
   position: fixed;
   top: 80px;
@@ -111,19 +111,20 @@
 </style>
 
 <script>
-// Fixed 2025 Language Switcher: Proper Redirect + Modern UI
-// Supports: English filenames, Uzbek content files, auto-fallback
+// Fixed Script: Clean URLs (/slug), Slugified Filenames (.en.md → -en), Proper Redirects (2025)
 document.addEventListener("DOMContentLoaded", async () => {
-  const supportedLangs = { en: "EN", uz: "UZ" }; // Add more: { de: "DE", fr: "FR" }
+  const supportedLangs = { en: "EN", uz: "UZ" }; // Add more as needed
   const defaultLang = "en";
-  const currentPath = window.location.pathname;
-  const noteSlug = currentPath.split("/").pop().replace(".html", ""); // e.g., "overview-en"
+  const currentPath = window.location.pathname; // e.g., "/education/obsidian-tutorial/overview-en"
+  const pathParts = currentPath.split("/").filter(Boolean);
+  const currentSlug = pathParts.pop(); // e.g., "overview-en"
+  const basePath = pathParts.length ? "/" + pathParts.join("/") : ""; // e.g., "/education/obsidian-tutorial"
 
   // Get lang from URL: ?lang=uz
   const params = new URLSearchParams(window.location.search);
   let currentLang = params.get("lang") || defaultLang;
 
-  // 1. Create modern switcher buttons
+  // 1. Create modern switcher
   const switcher = document.createElement("div");
   switcher.className = "language-switcher";
   Object.entries(supportedLangs).forEach(([code, label]) => {
@@ -135,71 +136,73 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
   document.body.appendChild(switcher);
 
-  // 2. Core function: Switch language with redirect
+  // 2. Switch language with clean redirect
   async function switchToLang(lang) {
     if (lang === defaultLang) {
-      // Clean URL for English
-      window.location.href = currentPath.replace(`-${lang}.html`, "-en.html") || `${currentPath.replace(".html", "-en.html")}.html`;
+      // Clean English URL: strip any -uz suffix if present
+      const cleanSlug = currentSlug.replace(`-${lang}`, `-en`) || `overview-en`; // Adjust base if needed
+      window.location.href = basePath + "/" + cleanSlug;
       return;
     }
 
-    // For Uzbek: Check if -uz.html exists
-    const uzPath = currentPath.replace(`-${defaultLang}.html`, `-${lang}.html`) || `${currentPath.replace(".html", `-${lang}.html`)}.html`;
+    // For Uzbek: Build target slug (e.g., "overview-uz") and check existence
+    const targetSlug = currentSlug.replace(`-${defaultLang}`, `-${lang}`) || `${currentSlug.replace('-en', '')}-${lang}`;
+    const targetPath = basePath + "/" + targetSlug; // e.g., "/education/obsidian-tutorial/overview-uz"
+    
     try {
-      const response = await fetch(uzPath, { method: "HEAD" });
+      const response = await fetch(targetPath, { method: "HEAD" });
       if (response.ok) {
-        // Redirect to clean Uzbek URL (no ?lang param)
-        window.location.href = uzPath;
+        // Redirect to clean Uzbek URL (no ?lang)
+        window.location.href = targetPath;
       } else {
-        // Fallback: Show banner, stay on English
         showTranslationBanner();
       }
     } catch (error) {
+      console.error("Language check failed:", error);
       showTranslationBanner();
     }
   }
 
-  // 3. On load: Auto-redirect if ?lang=uz and file exists
+  // 3. On load: Auto-redirect if ?lang=uz and target exists
   if (currentLang !== defaultLang) {
-    const targetPath = currentPath.replace(`-${defaultLang}.html`, `-${currentLang}.html`) || `${currentPath.replace(".html", `-${currentLang}.html`)}.html`;
+    const targetSlug = currentSlug.replace(`-${defaultLang}`, `-${currentLang}`) || `${currentSlug.replace('-en', '')}-${currentLang}`;
+    const targetPath = basePath + "/" + targetSlug;
+    
     try {
       const response = await fetch(targetPath, { method: "HEAD" });
       if (response.ok) {
         window.location.href = targetPath; // Clean redirect
       } else {
-        // Strip param, stay on English
-        window.location.href = currentPath;
+        // Clean param, stay on English
+        window.location.href = basePath + "/" + currentSlug;
       }
     } catch (error) {
-      window.location.href = currentPath; // Fallback to English
+      console.error("Auto-redirect failed:", error);
+      window.location.href = basePath + "/" + currentSlug;
     }
   }
 
-  // 4. Helper: Show "Translation coming soon" banner
+  // 4. Show fallback banner
   function showTranslationBanner() {
     if (document.querySelector(".translation-banner")) return;
     const banner = document.createElement("div");
     banner.className = "translation-banner";
     banner.innerHTML = `🤔 Tarjima tez orada tayyor bo'ladi! (Translation coming soon!)`;
     document.body.appendChild(banner);
-    setTimeout(() => banner.remove(), 5000); // Auto-hide after 5s
+    setTimeout(() => banner.remove(), 5000);
   }
 
-  // 5. Bonus: Update page title with dg-metatitle for Uzbek UI (sidebar stays smart)
+  // 5. Uzbek UI tweaks: Swap sidebar titles via dg-metatitle (if present)
   if (currentLang === "uz") {
-    const metaTitle = document.querySelector('meta[property="og:title"]')?.content || document.title;
-    if (metaTitle && metaTitle.includes("Umumiy")) { // Detect Uzbek via keyword
-      document.title = metaTitle;
-    }
-    // Quick sidebar title swap (if plugin uses .tree-item classes)
-    document.querySelectorAll(".tree-item-self .tree-item-inner a").forEach(link => {
-      const uzTitle = link.getAttribute("data-title-uz") || link.textContent.replace("Overview", "Umumiy ko'rinish");
+    document.title = document.querySelector('meta[property="og:title"]')?.content || document.title;
+    // Sidebar swap (targets common Digital Garden classes)
+    document.querySelectorAll(".tree-item a, .nav-link, .sidebar a").forEach(link => {
+      const uzTitle = link.getAttribute("data-title-uz") || link.textContent.replace(/Overview/i, "Umumiy ko'rinish"); // Fallback replace
       if (uzTitle !== link.textContent) link.textContent = uzTitle;
     });
   }
 });
 </script>
-
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism-okaidia.min.css" integrity="sha512-mIs9kKbaw6JZFfSuo+MovjU+Ntggfoj8RwAmJbVXQ5mkAX5LlgETQEweFPI18humSPHymTb5iikEOKWF7I8ncQ==" crossorigin="anonymous" referrerpolicy="no-referrer" async/>
 <script src="https://fastly.jsdelivr.net/npm/whatwg-fetch@3.6.2/dist/fetch.umd.min.js" crossorigin="anonymous" referrerpolicy="no-referrer" async></script>
