@@ -12,6 +12,40 @@
 <script async src="https://fastly.jsdelivr.net/npm/@alpinejs/persist@3.11.1/dist/cdn.min.js"></script>
 <script src="https://fastly.jsdelivr.net/npm/alpinejs@3.11.1/dist/cdn.min.js" async></script>
 
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism-okaidia.min.css" integrity="sha512-mIs9kKbaw6JZFfSuo+MovjU+Ntggfoj8RwAmJbVXQ5mkAX5LlgETQEweFPI18humSPHymTb5iikEOKWF7I8ncQ==" crossorigin="anonymous" referrerpolicy="no-referrer" async/>
+<script src="https://fastly.jsdelivr.net/npm/whatwg-fetch@3.6.2/dist/fetch.umd.min.js" crossorigin="anonymous" referrerpolicy="no-referrer" async></script>
+
+<link href="/styles/digital-garden-base.css" rel="stylesheet">
+{%-if meta.themeStyle%}
+    <link href="/styles/obsidian-base.css" rel="stylesheet">
+    <link href="{{meta.themeStyle}}" rel="stylesheet">
+{% else %}
+    <link href="/styles/style.css" rel="stylesheet">
+{%endif%}
+
+<link href="/styles/custom-style.css" rel="stylesheet">
+{%- for style in dynamics.styles -%}
+<link href="{{style}}" rel="stylesheet">
+{%- endfor -%}
+
+{% favicons './src/site/favicon.svg', appleIconBgColor='#123' %}
+
+{% if metatags %}
+    {% for name, content in metatags %}
+        <meta name="{{ name }}" content="{{ content }}">
+    {% endfor %}
+{% endif %}
+
+{% if meta.styleSettingsCss %}
+    <style>
+        {{ meta.styleSettingsCss | safe }}
+    </style>
+{% endif %}
+<style>
+</style>
+
+
 <style>
 /* Modern Language Switcher – Clean URLs Edition (2025) */
 .language-switcher {
@@ -111,7 +145,7 @@
 </style>
 
 <script>
-// Fixed Script: Clean URLs (/slug), Slugified Filenames (.en.md → -en), Proper Redirects (2025)
+// Fixed Script: Clean URLs, Slugified Filenames, Sidebar Title Swap via Fetch (2025)
 document.addEventListener("DOMContentLoaded", async () => {
   const supportedLangs = { en: "EN", uz: "UZ" }; // Add more as needed
   const defaultLang = "en";
@@ -192,46 +226,32 @@ document.addEventListener("DOMContentLoaded", async () => {
     setTimeout(() => banner.remove(), 5000);
   }
 
-  // 5. Uzbek UI tweaks: Swap sidebar titles via dg-metatitle (if present)
+  // 5. Uzbek UI tweaks: Swap sidebar titles via fetch og:title (dg-metatitle / title)
   if (currentLang === "uz") {
+    // Swap page title
     document.title = document.querySelector('meta[property="og:title"]')?.content || document.title;
-    // Sidebar swap (targets common Digital Garden classes)
-    document.querySelectorAll(".tree-item a, .nav-link, .sidebar a").forEach(link => {
-      const uzTitle = link.getAttribute("data-title-uz") || link.textContent.replace(/Overview/i, "Umumiy ko'rinish"); // Fallback replace
-      if (uzTitle !== link.textContent) link.textContent = uzTitle;
+
+    // Swap sidebar links (async to avoid blocking)
+    document.querySelectorAll(".tree-item a, .nav-link a, .sidebar a, .file-tree a").forEach(async (link) => {
+      const href = link.href;
+      if (!href || href === window.location.href) return; // Skip current or invalid
+
+      try {
+        const response = await fetch(href);
+        if (!response.ok) return;
+
+        const text = await response.text();
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(text, "text/html");
+        const uzTitle = doc.querySelector('meta[property="og:title"]')?.content || link.textContent;
+
+        if (uzTitle !== link.textContent) {
+          link.textContent = uzTitle;
+        }
+      } catch (error) {
+        console.error("Sidebar title swap failed for", href, error);
+      }
     });
   }
 });
 </script>
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism-okaidia.min.css" integrity="sha512-mIs9kKbaw6JZFfSuo+MovjU+Ntggfoj8RwAmJbVXQ5mkAX5LlgETQEweFPI18humSPHymTb5iikEOKWF7I8ncQ==" crossorigin="anonymous" referrerpolicy="no-referrer" async/>
-<script src="https://fastly.jsdelivr.net/npm/whatwg-fetch@3.6.2/dist/fetch.umd.min.js" crossorigin="anonymous" referrerpolicy="no-referrer" async></script>
-
-<link href="/styles/digital-garden-base.css" rel="stylesheet">
-{%-if meta.themeStyle%}
-    <link href="/styles/obsidian-base.css" rel="stylesheet">
-    <link href="{{meta.themeStyle}}" rel="stylesheet">
-{% else %}
-    <link href="/styles/style.css" rel="stylesheet">
-{%endif%}
-
-<link href="/styles/custom-style.css" rel="stylesheet">
-{%- for style in dynamics.styles -%}
-<link href="{{style}}" rel="stylesheet">
-{%- endfor -%}
-
-{% favicons './src/site/favicon.svg', appleIconBgColor='#123' %}
-
-{% if metatags %}
-    {% for name, content in metatags %}
-        <meta name="{{ name }}" content="{{ content }}">
-    {% endfor %}
-{% endif %}
-
-{% if meta.styleSettingsCss %}
-    <style>
-        {{ meta.styleSettingsCss | safe }}
-    </style>
-{% endif %}
-<style>
-</style>
