@@ -145,49 +145,51 @@
 </style>
 
 <script>
-// Fixed Script: Clean URLs, Slugified Filenames, Sidebar Title Swap via Fetch (2025)
+// Bulletproof Script: Handles Root, Undefined Slugs, Sidebar Swaps (2025)
 document.addEventListener("DOMContentLoaded", async () => {
   const supportedLangs = { en: "EN", uz: "UZ" }; // Add more as needed
   const defaultLang = "en";
-  const currentPath = window.location.pathname; // e.g., "/education/obsidian-tutorial/overview-en"
+  const currentPath = window.location.pathname; // e.g., "/" or "/education/obsidian-tutorial/overview-en"
   const pathParts = currentPath.split("/").filter(Boolean);
-  const currentSlug = pathParts.pop(); // e.g., "overview-en"
-  const basePath = pathParts.length ? "/" + pathParts.join("/") : ""; // e.g., "/education/obsidian-tutorial"
+  const currentSlug = pathParts[pathParts.length - 1] || ""; // "" on root, "overview-en" otherwise
+  const basePath = pathParts.length > 1 ? "/" + pathParts.slice(0, -1).join("/") : ""; // e.g., "/education/obsidian-tutorial"
 
   // Get lang from URL: ?lang=uz
   const params = new URLSearchParams(window.location.search);
   let currentLang = params.get("lang") || defaultLang;
 
-  // 1. Create modern switcher
+  // 1. Create modern switcher (passes currentSlug safely to onclick)
   const switcher = document.createElement("div");
   switcher.className = "language-switcher";
   Object.entries(supportedLangs).forEach(([code, label]) => {
     const btn = document.createElement("button");
     btn.textContent = label;
     btn.className = code === currentLang ? "active" : "";
-    btn.onclick = () => switchToLang(code);
+    // Pass safe slug to onclick (string or empty)
+    btn.onclick = () => switchToLang(code, currentSlug || "", basePath);
     switcher.appendChild(btn);
   });
   document.body.appendChild(switcher);
 
-  // 2. Switch language with clean redirect
-  async function switchToLang(lang) {
+  // 2. Switch language with clean redirect (now takes params, safe replace)
+  window.switchToLang = async function(lang, slug, base) { // Global for onclick
+    if (!slug) slug = ""; // Ensure string
     if (lang === defaultLang) {
-      // Clean English URL: strip any -uz suffix if present
-      const cleanSlug = currentSlug.replace(`-${lang}`, `-en`) || `overview-en`; // Adjust base if needed
-      window.location.href = basePath + "/" + cleanSlug;
+      // Clean English URL
+      const cleanSlug = (slug || "").replace(`-${lang}`, `-en`) || "index"; // Default to index on root
+      window.location.href = base + (cleanSlug ? "/" + cleanSlug : "");
       return;
     }
 
-    // For Uzbek: Build target slug (e.g., "overview-uz") and check existence
-    const targetSlug = currentSlug.replace(`-${defaultLang}`, `-${lang}`) || `${currentSlug.replace('-en', '')}-${lang}`;
-    const targetPath = basePath + "/" + targetSlug; // e.g., "/education/obsidian-tutorial/overview-uz"
+    // For Uzbek: Build target slug safely
+    const targetSlug = (slug || "").replace(`-${defaultLang}`, `-${lang}`) || 
+                       ((slug || "").replace('-en', '') + `-${lang}`) || `home-uz`; // Fallback slug
+    const targetPath = base + "/" + targetSlug;
     
     try {
       const response = await fetch(targetPath, { method: "HEAD" });
       if (response.ok) {
-        // Redirect to clean Uzbek URL (no ?lang)
-        window.location.href = targetPath;
+        window.location.href = targetPath; // Clean redirect
       } else {
         showTranslationBanner();
       }
@@ -195,24 +197,24 @@ document.addEventListener("DOMContentLoaded", async () => {
       console.error("Language check failed:", error);
       showTranslationBanner();
     }
-  }
+  };
 
-  // 3. On load: Auto-redirect if ?lang=uz and target exists
-  if (currentLang !== defaultLang) {
-    const targetSlug = currentSlug.replace(`-${defaultLang}`, `-${currentLang}`) || `${currentSlug.replace('-en', '')}-${currentLang}`;
+  // 3. On load: Auto-redirect if ?lang=uz and target exists (safe slug)
+  if (currentLang !== defaultLang && currentSlug) {
+    const targetSlug = (currentSlug || "").replace(`-${defaultLang}`, `-${currentLang}`) || 
+                       ((currentSlug || "").replace('-en', '') + `-${currentLang}`);
     const targetPath = basePath + "/" + targetSlug;
     
     try {
       const response = await fetch(targetPath, { method: "HEAD" });
       if (response.ok) {
-        window.location.href = targetPath; // Clean redirect
+        window.location.href = targetPath;
       } else {
-        // Clean param, stay on English
-        window.location.href = basePath + "/" + currentSlug;
+        window.location.href = basePath + (currentSlug ? "/" + currentSlug : "");
       }
     } catch (error) {
       console.error("Auto-redirect failed:", error);
-      window.location.href = basePath + "/" + currentSlug;
+      window.location.href = basePath + (currentSlug ? "/" + currentSlug : "");
     }
   }
 
@@ -226,32 +228,36 @@ document.addEventListener("DOMContentLoaded", async () => {
     setTimeout(() => banner.remove(), 5000);
   }
 
-  // 5. Uzbek UI tweaks: Swap sidebar titles via fetch og:title (dg-metatitle / title)
+  // 5. Uzbek UI tweaks: Swap sidebar titles via fetch og:title (delayed, safe, cached)
   if (currentLang === "uz") {
-    // Swap page title
-    document.title = document.querySelector('meta[property="og:title"]')?.content || document.title;
+    // Swap page title safely
+    const ogTitle = document.querySelector('meta[property="og:title"]')?.content;
+    if (ogTitle) document.title = ogTitle;
 
-    // Swap sidebar links (async to avoid blocking)
-    document.querySelectorAll(".tree-item a, .nav-link a, .sidebar a, .file-tree a").forEach(async (link) => {
-      const href = link.href;
-      if (!href || href === window.location.href) return; // Skip current or invalid
+    // Delay for sidebar DOM (1s), then swap with cache
+    setTimeout(() => {
+      const titleCache = new Map(); // Cache to avoid re-fetch
+      document.querySelectorAll(".tree-item a, .nav-link a, .sidebar a, .file-tree a").forEach(async (link) => {
+        if (!link.href || link.href === window.location.href || titleCache.has(link.href)) return;
+        
+        try {
+          const response = await fetch(link.href);
+          if (!response.ok) return;
 
-      try {
-        const response = await fetch(href);
-        if (!response.ok) return;
+          const text = await response.text();
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(text, "text/html");
+          const uzTitle = doc.querySelector('meta[property="og:title"]')?.content || link.textContent;
 
-        const text = await response.text();
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(text, "text/html");
-        const uzTitle = doc.querySelector('meta[property="og:title"]')?.content || link.textContent;
-
-        if (uzTitle !== link.textContent) {
-          link.textContent = uzTitle;
+          if (uzTitle && uzTitle !== link.textContent) {
+            link.textContent = uzTitle;
+            titleCache.set(link.href, uzTitle); // Cache hit
+          }
+        } catch (error) {
+          console.error("Sidebar title swap failed for", link.href, error);
         }
-      } catch (error) {
-        console.error("Sidebar title swap failed for", href, error);
-      }
-    });
+      });
+    }, 1000); // 1s delay for full DOM load
   }
 });
 </script>
