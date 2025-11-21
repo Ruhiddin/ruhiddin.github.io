@@ -3,7 +3,7 @@
     <title>Ruhiddin&#39;s Garden</title>
     <link href="https://Ruhiddin.github.io//feed.xml" rel="self" />
     <link href="https://Ruhiddin.github.io/" />
-    <updated>2025-11-21T05:54:38Z</updated>
+    <updated>2025-11-21T06:24:23Z</updated>
     <id>https://Ruhiddin.github.io/</id>
         <entry>
             <title>
@@ -458,6 +458,73 @@ if (!url.searchParams.has(&#39;lang&#39;) &amp;&amp; localStorage.preferredLang)
   location.replace(url);
 }
 &lt;/script&gt;
+&lt;script&gt;
+document.addEventListener(&quot;DOMContentLoaded&quot;, function () {
+  const supportedLangs = [&quot;en&quot;, &quot;es&quot;, &quot;zh&quot;, &quot;fr&quot;, &quot;de&quot;]; // add yours
+  const defaultLang = &quot;en&quot;;
+
+  // Get lang from URL: ?lang=es
+  const urlParams = new URLSearchParams(window.location.search);
+  let currentLang = urlParams.get(&quot;lang&quot;) || defaultLang;
+  if (!supportedLangs.includes(currentLang)) currentLang = defaultLang;
+
+  // Function: switch language
+  function switchLang(lang) {
+    if (lang === defaultLang) {
+      history.replaceState(null, &quot;&quot;, window.location.pathname);
+    } else {
+      history.replaceState(null, &quot;&quot;, `?lang=${lang}`);
+    }
+    location.reload(); // reload to load the correct .lang.md file
+  }
+
+  // Create language switcher buttons (top-right)
+  const switcher = document.createElement(&quot;div&quot;);
+  switcher.style.cssText = `
+    position: fixed; top: 15px; right: 20px; z-index: 9999;
+    background: var(--background-primary); padding: 8px 12px;
+    border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    font-size: 14px; display: flex; gap: 10px;
+  `;
+
+  supportedLangs.forEach(l =&gt; {
+    const btn = document.createElement(&quot;button&quot;);
+    btn.textContent = l.toUpperCase();
+    btn.style.cssText = `
+      background: ${l === currentLang ? &quot;#0066ff&quot; : &quot;transparent&quot;};
+      color: ${l === currentLang ? &quot;white&quot; : &quot;var(--text-normal)&quot;};
+      border: 1px solid ${l === currentLang ? &quot;#0066ff&quot; : &quot;#ccc&quot;};
+      padding: 4px 10px; border-radius: 6px; cursor: pointer;
+    `;
+    btn.onclick = () =&gt; switchLang(l);
+    switcher.appendChild(btn);
+  });
+
+  document.body.appendChild(switcher);
+
+  // AUTO-REDIRECT to correct language version
+  const currentPath = window.location.pathname;
+  const noteName = currentPath.split(&quot;/&quot;).pop().replace(&quot;.html&quot;, &quot;&quot;);
+
+  if (currentLang !== defaultLang) {
+    const langVersion = noteName + &quot;.&quot; + currentLang + &quot;.md&quot;;
+    const defaultVersion = noteName + &quot;.md&quot;;
+
+    // Check if the language version exists (via &lt;link&gt; tags in &lt;head&gt;)
+    const links = Array.from(document.querySelectorAll(&quot;link[rel=&#39;alternate&#39;]&quot;));
+    const hasLangVersion = links.some(link =&gt; 
+      link.hreflang === currentLang &amp;&amp; link.href.includes(encodeURIComponent(langVersion))
+    );
+
+    if (!hasLangVersion &amp;&amp; noteName !== &quot;index&quot;) {
+      // Fall back to default language version
+      const defaultUrl = currentPath.replace(noteName + &quot;.html&quot;, &quot;&quot;) + 
+        (noteName.endsWith(&quot;.&quot; + currentLang) ? noteName.replace(&quot;.&quot; + currentLang, &quot;&quot;) : noteName) + &quot;.html&quot;;
+      window.location.href = defaultUrl;
+    }
+  }
+});
+&lt;/script&gt;
 &lt;/div&gt;&lt;/div&gt;
 &lt;h1 id=&quot;this-is-home-page&quot; tabindex=&quot;-1&quot;&gt;This is home page&lt;/h1&gt;
 
@@ -494,6 +561,73 @@ if (!url.searchParams.has(&#39;lang&#39;) &amp;&amp; localStorage.preferredLang)
   url.searchParams.set(&#39;lang&#39;, localStorage.preferredLang);
   location.replace(url);
 }
+&lt;/script&gt;
+&lt;script&gt;
+document.addEventListener(&quot;DOMContentLoaded&quot;, function () {
+  const supportedLangs = [&quot;en&quot;, &quot;es&quot;, &quot;zh&quot;, &quot;fr&quot;, &quot;de&quot;]; // add yours
+  const defaultLang = &quot;en&quot;;
+
+  // Get lang from URL: ?lang=es
+  const urlParams = new URLSearchParams(window.location.search);
+  let currentLang = urlParams.get(&quot;lang&quot;) || defaultLang;
+  if (!supportedLangs.includes(currentLang)) currentLang = defaultLang;
+
+  // Function: switch language
+  function switchLang(lang) {
+    if (lang === defaultLang) {
+      history.replaceState(null, &quot;&quot;, window.location.pathname);
+    } else {
+      history.replaceState(null, &quot;&quot;, `?lang=${lang}`);
+    }
+    location.reload(); // reload to load the correct .lang.md file
+  }
+
+  // Create language switcher buttons (top-right)
+  const switcher = document.createElement(&quot;div&quot;);
+  switcher.style.cssText = `
+    position: fixed; top: 15px; right: 20px; z-index: 9999;
+    background: var(--background-primary); padding: 8px 12px;
+    border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    font-size: 14px; display: flex; gap: 10px;
+  `;
+
+  supportedLangs.forEach(l =&gt; {
+    const btn = document.createElement(&quot;button&quot;);
+    btn.textContent = l.toUpperCase();
+    btn.style.cssText = `
+      background: ${l === currentLang ? &quot;#0066ff&quot; : &quot;transparent&quot;};
+      color: ${l === currentLang ? &quot;white&quot; : &quot;var(--text-normal)&quot;};
+      border: 1px solid ${l === currentLang ? &quot;#0066ff&quot; : &quot;#ccc&quot;};
+      padding: 4px 10px; border-radius: 6px; cursor: pointer;
+    `;
+    btn.onclick = () =&gt; switchLang(l);
+    switcher.appendChild(btn);
+  });
+
+  document.body.appendChild(switcher);
+
+  // AUTO-REDIRECT to correct language version
+  const currentPath = window.location.pathname;
+  const noteName = currentPath.split(&quot;/&quot;).pop().replace(&quot;.html&quot;, &quot;&quot;);
+
+  if (currentLang !== defaultLang) {
+    const langVersion = noteName + &quot;.&quot; + currentLang + &quot;.md&quot;;
+    const defaultVersion = noteName + &quot;.md&quot;;
+
+    // Check if the language version exists (via &lt;link&gt; tags in &lt;head&gt;)
+    const links = Array.from(document.querySelectorAll(&quot;link[rel=&#39;alternate&#39;]&quot;));
+    const hasLangVersion = links.some(link =&gt; 
+      link.hreflang === currentLang &amp;&amp; link.href.includes(encodeURIComponent(langVersion))
+    );
+
+    if (!hasLangVersion &amp;&amp; noteName !== &quot;index&quot;) {
+      // Fall back to default language version
+      const defaultUrl = currentPath.replace(noteName + &quot;.html&quot;, &quot;&quot;) + 
+        (noteName.endsWith(&quot;.&quot; + currentLang) ? noteName.replace(&quot;.&quot; + currentLang, &quot;&quot;) : noteName) + &quot;.html&quot;;
+      window.location.href = defaultUrl;
+    }
+  }
+});
 &lt;/script&gt;
 &lt;/div&gt;&lt;/div&gt;
 &lt;p&gt;Bu Bosh sahifa.&lt;/p&gt;
