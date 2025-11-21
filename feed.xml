@@ -3,7 +3,7 @@
     <title>Ruhiddin the BITHERD</title>
     <link href="https://Ruhiddin.github.io//feed.xml" rel="self" //>
     <link href="https://Ruhiddin.github.io/" //>
-    <updated>2025-11-21T17:11:10Z</updated>
+    <updated>2025-11-21T17:19:24Z</updated>
     <id>https://Ruhiddin.github.io/</id>
         <entry>
             <title>
@@ -371,37 +371,11 @@
         </entry>
         <entry>
             <title>
-                Mening hikoyam
-                
-            </title>
-            <updated>2025-11-19T19:40:11.412Z</updated>
-            <id>https://Ruhiddin.github.io//bitherd/uz/profil/mening-hikoyam/</id>
-            <content type="html">
-                &lt;p&gt;Hikoya hozircha faqat &lt;a class=&quot;internal-link&quot; target=&quot;&quot; data-note-icon=&quot;&quot; href=&quot;https://ruhiddin.github.io/bitherd/en/profile/my-story/&quot;&gt;ingliz tilida&lt;/a&gt; mavjud!&lt;/p&gt;
-
-            </content>
-            <link href="https://Ruhiddin.github.io//bitherd/uz/profil/mening-hikoyam/" //>
-        </entry>
-        <entry>
-            <title>
-                Bosh sahifa
-                
-            </title>
-            <updated>2025-11-19T19:40:35.883Z</updated>
-            <id>https://Ruhiddin.github.io//bitherd/uz/bosh-sahifa/</id>
-            <content type="html">
-                &lt;h1 id=&quot;bu-bosh-sahifa&quot; tabindex=&quot;-1&quot;&gt;Bu bosh sahifa&lt;/h1&gt;
-
-            </content>
-            <link href="https://Ruhiddin.github.io//bitherd/uz/bosh-sahifa/" //>
-        </entry>
-        <entry>
-            <title>
-                My Story
+                My Story.en
                 
             </title>
             <updated>2025-11-19T19:35:46.864Z</updated>
-            <id>https://Ruhiddin.github.io//bitherd/en/profile/my-story/</id>
+            <id>https://Ruhiddin.github.io//ruhiddin-github-io/ruhiddin/my-story-en/</id>
             <content type="html">
                 &lt;p&gt;My name is Ruhiddin Turdaliyev, born on 28 June 2003 in the Fergana Valley of Uzbekistan. I grew up as a Kyrgyz native, bilingual in Uzbek, and gradually reached an English level around B2. My early education took place at local school No. 59 in the Fergana District, where I felt confident, even strong, compared to my classmates. But that confidence would be challenged soon.&lt;/p&gt;
 &lt;p&gt;After the 9th grade, I was accepted into the Academic Lyceum under TUIT Fergana branch, specializing in the technicians direction with a focus on math and physics. The moment I entered, I realized something painful: everything I knew was shallow compared to the competition-level students around me. They had deep foundations, while I was suddenly the one who knew nothing at all.&lt;/p&gt;
@@ -425,213 +399,57 @@
 &lt;p&gt;I believe that if God permits, I can learn and do anything. But I also know my nature: I dive deeply into new subjects, absorb them fully, and then often feel overwhelmed by the amount of work needed to bring the ideas to life. Time, budget, and resources intimidate me. I do not think I will feel fulfilled working only as a regular employee; I am drawn toward craft, design, and invention. The conditions around me may not support these ambitions, but I still care about them. I share my ideas and paths not for fame, but because I want to see those ideas come alive in the real world, even if through someone else’s hands.&lt;/p&gt;
 
             </content>
-            <link href="https://Ruhiddin.github.io//bitherd/en/profile/my-story/" //>
+            <link href="https://Ruhiddin.github.io//ruhiddin-github-io/ruhiddin/my-story-en/" //>
         </entry>
         <entry>
             <title>
-                Home Page
+                Obsidian tutorial.uz
                 
             </title>
-            <updated>2025-11-19T19:45:46.202Z</updated>
-            <id>https://Ruhiddin.github.io//bitherd/en/home-page/</id>
+            <updated>2025-11-21T17:18:25.884Z</updated>
+            <id>https://Ruhiddin.github.io//ruhiddin-github-io/projects/obsidian-turorial/obsidian-tutorial-uz/</id>
             <content type="html">
-                &lt;div class=&quot;transclusion internal-embed is-loaded&quot;&gt;&lt;div class=&quot;markdown-embed&quot;&gt;
-&lt;div class=&quot;lang-switcher&quot;&gt;
-  &lt;a href=&quot;https://ruhiddin.github.io/?lang=en&quot; class=&quot;{{currentLang === &#39;en&#39; ? &#39;active&#39; : &#39;&#39;}}&quot;&gt;EN&lt;/a&gt;
-  &lt;a href=&quot;https://ruhiddin.github.io/?lang=uz&quot; class=&quot;{{currentLang === &#39;uz&#39; ? &#39;active&#39; : &#39;&#39;}}&quot;&gt;O‘Z&lt;/a&gt;
-&lt;/div&gt;
-&lt;script&gt;
-// Persist choice + reload with param
-const url = new URL(location);
-document.querySelectorAll(&#39;.lang-switcher a&#39;).forEach(a =&gt; {
-  a.addEventListener(&#39;click&#39;, e =&gt; {
-    e.preventDefault();
-    url.searchParams.set(&#39;lang&#39;, a.textContent.trim().toLowerCase());
-    localStorage.setItem(&#39;preferredLang&#39;, a.textContent.trim().toLowerCase());
-    location.href = url;
-  });
-});
-
-// Auto-detect preferred language on first visit
-if (!url.searchParams.has(&#39;lang&#39;) &amp;&amp; localStorage.preferredLang) {
-  url.searchParams.set(&#39;lang&#39;, localStorage.preferredLang);
-  location.replace(url);
-}
-&lt;/script&gt;
-&lt;script&gt;
-document.addEventListener(&quot;DOMContentLoaded&quot;, function () {
-  const supportedLangs = [&quot;en&quot;, &quot;es&quot;, &quot;zh&quot;, &quot;fr&quot;, &quot;de&quot;]; // add yours
-  const defaultLang = &quot;en&quot;;
-
-  // Get lang from URL: ?lang=es
-  const urlParams = new URLSearchParams(window.location.search);
-  let currentLang = urlParams.get(&quot;lang&quot;) || defaultLang;
-  if (!supportedLangs.includes(currentLang)) currentLang = defaultLang;
-
-  // Function: switch language
-  function switchLang(lang) {
-    if (lang === defaultLang) {
-      history.replaceState(null, &quot;&quot;, window.location.pathname);
-    } else {
-      history.replaceState(null, &quot;&quot;, `?lang=${lang}`);
-    }
-    location.reload(); // reload to load the correct .lang.md file
-  }
-
-  // Create language switcher buttons (top-right)
-  const switcher = document.createElement(&quot;div&quot;);
-  switcher.style.cssText = `
-    position: fixed; top: 15px; right: 20px; z-index: 9999;
-    background: var(--background-primary); padding: 8px 12px;
-    border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    font-size: 14px; display: flex; gap: 10px;
-  `;
-
-  supportedLangs.forEach(l =&gt; {
-    const btn = document.createElement(&quot;button&quot;);
-    btn.textContent = l.toUpperCase();
-    btn.style.cssText = `
-      background: ${l === currentLang ? &quot;#0066ff&quot; : &quot;transparent&quot;};
-      color: ${l === currentLang ? &quot;white&quot; : &quot;var(--text-normal)&quot;};
-      border: 1px solid ${l === currentLang ? &quot;#0066ff&quot; : &quot;#ccc&quot;};
-      padding: 4px 10px; border-radius: 6px; cursor: pointer;
-    `;
-    btn.onclick = () =&gt; switchLang(l);
-    switcher.appendChild(btn);
-  });
-
-  document.body.appendChild(switcher);
-
-  // AUTO-REDIRECT to correct language version
-  const currentPath = window.location.pathname;
-  const noteName = currentPath.split(&quot;/&quot;).pop().replace(&quot;.html&quot;, &quot;&quot;);
-
-  if (currentLang !== defaultLang) {
-    const langVersion = noteName + &quot;.&quot; + currentLang + &quot;.md&quot;;
-    const defaultVersion = noteName + &quot;.md&quot;;
-
-    // Check if the language version exists (via &lt;link&gt; tags in &lt;head&gt;)
-    const links = Array.from(document.querySelectorAll(&quot;link[rel=&#39;alternate&#39;]&quot;));
-    const hasLangVersion = links.some(link =&gt; 
-      link.hreflang === currentLang &amp;&amp; link.href.includes(encodeURIComponent(langVersion))
-    );
-
-    if (!hasLangVersion &amp;&amp; noteName !== &quot;index&quot;) {
-      // Fall back to default language version
-      const defaultUrl = currentPath.replace(noteName + &quot;.html&quot;, &quot;&quot;) + 
-        (noteName.endsWith(&quot;.&quot; + currentLang) ? noteName.replace(&quot;.&quot; + currentLang, &quot;&quot;) : noteName) + &quot;.html&quot;;
-      window.location.href = defaultUrl;
-    }
-  }
-});
-&lt;/script&gt;
-&lt;/div&gt;&lt;/div&gt;
-&lt;h1 id=&quot;this-is-home-page&quot; tabindex=&quot;-1&quot;&gt;This is home page&lt;/h1&gt;
+                &lt;p&gt;![[001_yangi_hamyon_ochish___62ce7908763d16742d92294e7be78ee2f12e969b388fb78234ec37b148731944.mkv]]&lt;br /&gt;
+Birinchi dars&lt;/p&gt;
 
             </content>
-            <link href="https://Ruhiddin.github.io//bitherd/en/home-page/" //>
+            <link href="https://Ruhiddin.github.io//ruhiddin-github-io/projects/obsidian-turorial/obsidian-tutorial-uz/" //>
         </entry>
         <entry>
             <title>
-                HOME_PAGE-BOSH SAHIFA
+                Obsidian tutorial.en
                 
             </title>
-            <updated>2025-11-21T05:54:01.468Z</updated>
+            <updated>2025-11-21T17:17:26.441Z</updated>
+            <id>https://Ruhiddin.github.io//ruhiddin-github-io/projects/obsidian-turorial/obsidian-tutorial-en/</id>
+            <content type="html">
+                &lt;p&gt;![[001_yangi_hamyon_ochish___62ce7908763d16742d92294e7be78ee2f12e969b388fb78234ec37b148731944.mkv]]&lt;br /&gt;
+First lesson&lt;/p&gt;
+
+            </content>
+            <link href="https://Ruhiddin.github.io//ruhiddin-github-io/projects/obsidian-turorial/obsidian-tutorial-en/" //>
+        </entry>
+        <entry>
+            <title>
+                Home Page.uz
+                
+            </title>
+            <updated>2025-11-21T17:18:34.941Z</updated>
+            <id>https://Ruhiddin.github.io//ruhiddin-github-io/home-page-uz/</id>
+            <content type="html">
+                
+            </content>
+            <link href="https://Ruhiddin.github.io//ruhiddin-github-io/home-page-uz/" //>
+        </entry>
+        <entry>
+            <title>
+                Home Page.en
+                
+            </title>
+            <updated>2025-11-21T17:13:46.731Z</updated>
             <id>https://Ruhiddin.github.io//</id>
             <content type="html">
-                &lt;div class=&quot;transclusion internal-embed is-loaded&quot;&gt;&lt;div class=&quot;markdown-embed&quot;&gt;
-&lt;div class=&quot;lang-switcher&quot;&gt;
-  &lt;a href=&quot;https://ruhiddin.github.io/?lang=en&quot; class=&quot;{{currentLang === &#39;en&#39; ? &#39;active&#39; : &#39;&#39;}}&quot;&gt;EN&lt;/a&gt;
-  &lt;a href=&quot;https://ruhiddin.github.io/?lang=uz&quot; class=&quot;{{currentLang === &#39;uz&#39; ? &#39;active&#39; : &#39;&#39;}}&quot;&gt;O‘Z&lt;/a&gt;
-&lt;/div&gt;
-&lt;script&gt;
-// Persist choice + reload with param
-const url = new URL(location);
-document.querySelectorAll(&#39;.lang-switcher a&#39;).forEach(a =&gt; {
-  a.addEventListener(&#39;click&#39;, e =&gt; {
-    e.preventDefault();
-    url.searchParams.set(&#39;lang&#39;, a.textContent.trim().toLowerCase());
-    localStorage.setItem(&#39;preferredLang&#39;, a.textContent.trim().toLowerCase());
-    location.href = url;
-  });
-});
-
-// Auto-detect preferred language on first visit
-if (!url.searchParams.has(&#39;lang&#39;) &amp;&amp; localStorage.preferredLang) {
-  url.searchParams.set(&#39;lang&#39;, localStorage.preferredLang);
-  location.replace(url);
-}
-&lt;/script&gt;
-&lt;script&gt;
-document.addEventListener(&quot;DOMContentLoaded&quot;, function () {
-  const supportedLangs = [&quot;en&quot;, &quot;es&quot;, &quot;zh&quot;, &quot;fr&quot;, &quot;de&quot;]; // add yours
-  const defaultLang = &quot;en&quot;;
-
-  // Get lang from URL: ?lang=es
-  const urlParams = new URLSearchParams(window.location.search);
-  let currentLang = urlParams.get(&quot;lang&quot;) || defaultLang;
-  if (!supportedLangs.includes(currentLang)) currentLang = defaultLang;
-
-  // Function: switch language
-  function switchLang(lang) {
-    if (lang === defaultLang) {
-      history.replaceState(null, &quot;&quot;, window.location.pathname);
-    } else {
-      history.replaceState(null, &quot;&quot;, `?lang=${lang}`);
-    }
-    location.reload(); // reload to load the correct .lang.md file
-  }
-
-  // Create language switcher buttons (top-right)
-  const switcher = document.createElement(&quot;div&quot;);
-  switcher.style.cssText = `
-    position: fixed; top: 15px; right: 20px; z-index: 9999;
-    background: var(--background-primary); padding: 8px 12px;
-    border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    font-size: 14px; display: flex; gap: 10px;
-  `;
-
-  supportedLangs.forEach(l =&gt; {
-    const btn = document.createElement(&quot;button&quot;);
-    btn.textContent = l.toUpperCase();
-    btn.style.cssText = `
-      background: ${l === currentLang ? &quot;#0066ff&quot; : &quot;transparent&quot;};
-      color: ${l === currentLang ? &quot;white&quot; : &quot;var(--text-normal)&quot;};
-      border: 1px solid ${l === currentLang ? &quot;#0066ff&quot; : &quot;#ccc&quot;};
-      padding: 4px 10px; border-radius: 6px; cursor: pointer;
-    `;
-    btn.onclick = () =&gt; switchLang(l);
-    switcher.appendChild(btn);
-  });
-
-  document.body.appendChild(switcher);
-
-  // AUTO-REDIRECT to correct language version
-  const currentPath = window.location.pathname;
-  const noteName = currentPath.split(&quot;/&quot;).pop().replace(&quot;.html&quot;, &quot;&quot;);
-
-  if (currentLang !== defaultLang) {
-    const langVersion = noteName + &quot;.&quot; + currentLang + &quot;.md&quot;;
-    const defaultVersion = noteName + &quot;.md&quot;;
-
-    // Check if the language version exists (via &lt;link&gt; tags in &lt;head&gt;)
-    const links = Array.from(document.querySelectorAll(&quot;link[rel=&#39;alternate&#39;]&quot;));
-    const hasLangVersion = links.some(link =&gt; 
-      link.hreflang === currentLang &amp;&amp; link.href.includes(encodeURIComponent(langVersion))
-    );
-
-    if (!hasLangVersion &amp;&amp; noteName !== &quot;index&quot;) {
-      // Fall back to default language version
-      const defaultUrl = currentPath.replace(noteName + &quot;.html&quot;, &quot;&quot;) + 
-        (noteName.endsWith(&quot;.&quot; + currentLang) ? noteName.replace(&quot;.&quot; + currentLang, &quot;&quot;) : noteName) + &quot;.html&quot;;
-      window.location.href = defaultUrl;
-    }
-  }
-});
-&lt;/script&gt;
-&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;Bu Bosh sahifa.&lt;/p&gt;
-
+                
             </content>
             <link href="https://Ruhiddin.github.io//" //>
         </entry>
