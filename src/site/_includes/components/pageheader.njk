@@ -12,6 +12,45 @@
 <script async src="https://fastly.jsdelivr.net/npm/@alpinejs/persist@3.11.1/dist/cdn.min.js"></script>
 <script src="https://fastly.jsdelivr.net/npm/alpinejs@3.11.1/dist/cdn.min.js" async></script>
 
+<script>
+// 2025 Smart Bilingual Garden – English filenames + Uzbek titles in UI
+document.addEventListener("DOMContentLoaded", () => {
+  const uzbekMode = location.search.includes("lang=uz");
+
+  // Language switcher buttons
+  const div = document.createElement("div");
+  div.innerHTML = `
+    <button onclick="location.search='lang=uz'"   style="font-weight:${uzbekMode?'bold':'normal'}">UZ</button>
+    <button onclick="location.search=''"          style="font-weight:${!uzbekMode?'bold':'normal'}">EN</button>
+  `;
+  Object.assign(div.style, {
+    position:"fixed", top:"12px", right:"20px", zIndex:9999,
+    background:"var(--background-primary)", padding:"8px 14px",
+    borderRadius:"10px", boxShadow:"0 2px 10px rgba(0,0,0,0.2)",
+    fontSize:"15px", display:"flex", gap:"12px"
+  });
+  document.body.appendChild(div);
+
+  // Magic part: Force Uzbek titles in sidebar when ?lang=uz
+  if (uzbekMode) {
+    document.querySelectorAll(".tree-item-self .tree-item-inner").forEach(el => {
+      const link = el.closest("a");
+      if (!link) return;
+      const fileName = link.href.split("/").pop().replace(".html","");
+      const metaTitleUz = el.getAttribute("data-metatitle-uz") || el.textContent; // we will set this below
+      if (metaTitleUz.trim()) el.textContent = metaTitleUz;
+    });
+
+    // Inject Uzbek titles from frontmatter (runs once)
+    document.querySelectorAll("meta[property='og:title'], meta[name='title']").forEach(meta => {
+      const uzTitle = meta.content; // already set by dg-metatitle when lang=uz
+      if (uzTitle) document.title = uzTitle;
+    });
+  }
+});
+</script>
+
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism-okaidia.min.css" integrity="sha512-mIs9kKbaw6JZFfSuo+MovjU+Ntggfoj8RwAmJbVXQ5mkAX5LlgETQEweFPI18humSPHymTb5iikEOKWF7I8ncQ==" crossorigin="anonymous" referrerpolicy="no-referrer" async/>
 <script src="https://fastly.jsdelivr.net/npm/whatwg-fetch@3.6.2/dist/fetch.umd.min.js" crossorigin="anonymous" referrerpolicy="no-referrer" async></script>
 
