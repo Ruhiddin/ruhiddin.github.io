@@ -1,3 +1,207 @@
+<style>
+.lang-switcher {
+  position: fixed;
+  top: 16px;
+  right: 24px;
+  z-index: 9999;
+  display: flex;
+  gap: 10px;
+  background: rgba(255,255,255,0.94);
+  backdrop-filter: blur(16px);
+  padding: 8px 14px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  font: 600 14px system-ui;
+}
+.lang-switcher button {
+  all: unset;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.lang-switcher button.active {
+  background: #0066ff;
+  color: white;
+}
+.lang-switcher button:hover:not(.active) {
+  background: #f0f0f0;
+}
+@media (prefers-color-scheme: dark) {
+  .lang-switcher { background: rgba(30,30,30,0.94); }
+  .lang-switcher button:hover:not(.active) { background: #404040; }
+}
+</style>
+
+
+
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  console.clear();
+  console.log("Dynamic Language Switcher v2025");
+
+  // ---------------------------------------------------------
+  // Utility: extract slug from href (no trailing slash)
+  // ---------------------------------------------------------
+  const getSlugFromHref = (href) => {
+    try {
+      const url = new URL(href, location.origin);
+      const clean = url.pathname.replace(/\/+$/, "");
+      const parts = clean.split("/").filter(Boolean);
+      return parts.length ? parts.pop() : "";
+    } catch {
+      return "";
+    }
+  };
+
+  // ---------------------------------------------------------
+  // STEP 1: Collect all candidate slugs from sidebar
+  // ---------------------------------------------------------
+  const anchors = [...document.querySelectorAll("a.filename")];
+  const slugs = anchors
+    .map(a => a.getAttribute("href"))
+    .filter(href => href && href !== "/")
+    .map(getSlugFromHref)
+    .filter(Boolean);
+
+  // ---------------------------------------------------------
+  // STEP 2: Infer languages by detecting repeated suffixes
+  // ---------------------------------------------------------
+  const langCounts = {};
+
+  for (const slug of slugs) {
+    const match = slug.match(/-([a-z]{2,3})$/);
+    if (match) {
+      const lang = match[1];
+      langCounts[lang] = (langCounts[lang] || 0) + 1;
+    }
+  }
+
+  const LANGS = Object.keys(langCounts)
+    .filter(lang => langCounts[lang] > 1) // avoid accidental singletons
+    .sort()                               // stable order
+    .reduce((acc, lang) => {
+      acc[lang] = lang.toUpperCase();
+      return acc;
+    }, {});
+
+  if (Object.keys(LANGS).length === 0) {
+    console.log("No language patterns detected.");
+    return;
+  }
+
+  console.log("Languages detected:", LANGS);
+
+  // ---------------------------------------------------------
+  // STEP 3: Detect current slug, baseDir, current language
+  // ---------------------------------------------------------
+  const rawPath = location.pathname.replace(/\/+$/, "") || "/";
+  const parts = rawPath.split("/").filter(Boolean);
+  const slug = parts.length ? parts[parts.length - 1] : "";
+  const baseDir = parts.length > 1
+    ? "/" + parts.slice(0, -1).join("/") + "/"
+    : "/";
+
+  const currentLang =
+    slug.match(/-([a-z]{2,3})$/)?.[1] || Object.keys(LANGS)[0];
+
+  const baseName = slug.replace(/-[a-z]{2,3}$/, "");
+
+  console.log("Current:", { slug, baseDir, baseName, currentLang });
+
+  // ---------------------------------------------------------
+  // STEP 4: Detect home page base name from sidebar link
+  // ---------------------------------------------------------
+  const getHomeBaseName = () => {
+    const link = document.querySelector(
+      'a[href="/"].filename, a[href="./"].filename, a[href="/"] .filename'
+    );
+    console.log("link textcontent", link.textContent)
+    if (!link?.textContent) return "home";
+
+    let name =  link.textContent
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, "-")
+      .replace(/[^\w-]/g, "")
+      .replace(/-[a-z]{2,3}$/, "");
+    // Remove any detected language suffix at the very end
+    for (const suffix of Object.keys(LANGS)) {
+      const regex = new RegExp(`${suffix}$`);
+      if (regex.test(name)) {
+        name = name.replace(regex, "");
+        break;
+      }
+    }
+    return name;
+  };
+  
+
+  const homeBase = getHomeBaseName();
+  console.log("Home base:", homeBase);
+
+  // ---------------------------------------------------------
+  // STEP 5: Build target URLs
+  // ---------------------------------------------------------
+  const buildTargetUrl = (targetLang) => {
+    const isRoot = rawPath === "/";
+    const isHomePage = baseName === homeBase;
+
+    if (isRoot) {
+      return targetLang === Object.keys(LANGS)[0]
+        ? "/"
+        : "/" + homeBase + "-" + targetLang;
+    }
+
+    if (isHomePage) {
+      return targetLang === Object.keys(LANGS)[0]
+        ? "/"
+        : "/" + homeBase + "-" + targetLang;
+    }
+
+    return baseDir + baseName + "-" + targetLang;
+  };
+
+  // ---------------------------------------------------------
+  // STEP 6: Create language switcher
+  // ---------------------------------------------------------
+  const switcher = document.createElement("div");
+  switcher.className = "lang-switcher";
+
+  for (const [code, label] of Object.entries(LANGS)) {
+    const btn = document.createElement("button");
+    btn.textContent = label;
+
+    if (code === currentLang) {
+      btn.classList.add("active");
+    }
+
+    btn.onclick = async () => {
+      if (code === currentLang) return;
+
+      const targetUrl = buildTargetUrl(code);
+      console.log(`Switch → ${currentLang} → ${code}:`, targetUrl);
+
+      try {
+        const res = await fetch(targetUrl, { method: "HEAD" });
+        if (res.ok) location.href = targetUrl;
+      } catch (err) {
+        console.log("Fetch error:", err);
+      }
+    };
+
+    switcher.appendChild(btn);
+  }
+
+  document.body.appendChild(switcher);
+  console.log("Dynamic switcher initialized");
+});
+</script>
+
+
+
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script async type="module">
     import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
@@ -44,220 +248,3 @@
 {% endif %}
 <style>
 </style>
-
-
-<style>
-/* Modern Language Switcher – Clean URLs Edition (2025) */
-.language-switcher {
-  position: fixed;
-  top: 16px;
-  right: 24px;
-  z-index: 10000;
-  display: flex;
-  gap: 8px;
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(20px);
-  padding: 8px 16px;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.2);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-  transition: all 0.2s ease;
-}
-
-.language-switcher button {
-  padding: 6px 12px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  position: relative;
-  overflow: hidden;
-}
-
-.language-switcher button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 2px 8px rgba(0, 102, 255, 0.3);
-}
-
-.language-switcher button.active {
-  background: linear-gradient(135deg, #0066ff, #1e40af);
-  color: white;
-  box-shadow: 0 0 0 0 rgba(0, 102, 255, 0.4);
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0% { box-shadow: 0 0 0 0 rgba(0, 102, 255, 0.4); }
-  70% { box-shadow: 0 0 0 10px rgba(0, 102, 255, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(0, 102, 255, 0); }
-}
-
-.language-switcher button:not(.active) {
-  background: transparent;
-  color: #374151;
-}
-
-.language-switcher button:not(.active):hover {
-  background: #f3f4f6;
-  color: #111827;
-}
-
-/* Dark mode */
-@media (prefers-color-scheme: dark) {
-  .language-switcher {
-    background: rgba(17, 24, 39, 0.9);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(0, 0, 0, 0.2);
-  }
-  .language-switcher button:not(.active) {
-    color: #d1d5db;
-  }
-  .language-switcher button:not(.active):hover {
-    background: #374151;
-    color: #f9fafb;
-  }
-}
-
-/* Translation banner */
-.translation-banner {
-  position: fixed;
-  top: 80px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #fef3c7;
-  color: #92400e;
-  padding: 8px 16px;
-  border-radius: 8px;
-  font-size: 14px;
-  z-index: 9999;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-  animation: slideDown 0.3s ease;
-}
-
-@keyframes slideDown {
-  from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
-  to { opacity: 1; transform: translateX(-50%) translateY(0); }
-}
-</style>
-
-<script>
-// Bulletproof Script: Handles Root, Undefined Slugs, Sidebar Swaps (2025)
-document.addEventListener("DOMContentLoaded", async () => {
-  const supportedLangs = { en: "EN", uz: "UZ" }; // Add more as needed
-  const defaultLang = "en";
-  const currentPath = window.location.pathname; // e.g., "/" or "/education/obsidian-tutorial/overview-en"
-  const pathParts = currentPath.split("/").filter(Boolean);
-  const currentSlug = pathParts[pathParts.length - 1] || ""; // "" on root, "overview-en" otherwise
-  const basePath = pathParts.length > 1 ? "/" + pathParts.slice(0, -1).join("/") : ""; // e.g., "/education/obsidian-tutorial"
-
-  // Get lang from URL: ?lang=uz
-  const params = new URLSearchParams(window.location.search);
-  let currentLang = params.get("lang") || defaultLang;
-
-  // 1. Create modern switcher (passes currentSlug safely to onclick)
-  const switcher = document.createElement("div");
-  switcher.className = "language-switcher";
-  Object.entries(supportedLangs).forEach(([code, label]) => {
-    const btn = document.createElement("button");
-    btn.textContent = label;
-    btn.className = code === currentLang ? "active" : "";
-    // Pass safe slug to onclick (string or empty)
-    btn.onclick = () => switchToLang(code, currentSlug || "", basePath);
-    switcher.appendChild(btn);
-  });
-  document.body.appendChild(switcher);
-
-  // 2. Switch language with clean redirect (now takes params, safe replace)
-  window.switchToLang = async function(lang, slug, base) { // Global for onclick
-    if (!slug) slug = ""; // Ensure string
-    if (lang === defaultLang) {
-      // Clean English URL
-      const cleanSlug = (slug || "").replace(`-${lang}`, `-en`) || "index"; // Default to index on root
-      window.location.href = base + (cleanSlug ? "/" + cleanSlug : "");
-      return;
-    }
-
-    // For Uzbek: Build target slug safely
-    const targetSlug = (slug || "").replace(`-${defaultLang}`, `-${lang}`) || 
-                       ((slug || "").replace('-en', '') + `-${lang}`) || `home-uz`; // Fallback slug
-    const targetPath = base + "/" + targetSlug;
-    
-    try {
-      const response = await fetch(targetPath, { method: "HEAD" });
-      if (response.ok) {
-        window.location.href = targetPath; // Clean redirect
-      } else {
-        showTranslationBanner();
-      }
-    } catch (error) {
-      console.error("Language check failed:", error);
-      showTranslationBanner();
-    }
-  };
-
-  // 3. On load: Auto-redirect if ?lang=uz and target exists (safe slug)
-  if (currentLang !== defaultLang && currentSlug) {
-    const targetSlug = (currentSlug || "").replace(`-${defaultLang}`, `-${currentLang}`) || 
-                       ((currentSlug || "").replace('-en', '') + `-${currentLang}`);
-    const targetPath = basePath + "/" + targetSlug;
-    
-    try {
-      const response = await fetch(targetPath, { method: "HEAD" });
-      if (response.ok) {
-        window.location.href = targetPath;
-      } else {
-        window.location.href = basePath + (currentSlug ? "/" + currentSlug : "");
-      }
-    } catch (error) {
-      console.error("Auto-redirect failed:", error);
-      window.location.href = basePath + (currentSlug ? "/" + currentSlug : "");
-    }
-  }
-
-  // 4. Show fallback banner
-  function showTranslationBanner() {
-    if (document.querySelector(".translation-banner")) return;
-    const banner = document.createElement("div");
-    banner.className = "translation-banner";
-    banner.innerHTML = `🤔 Tarjima tez orada tayyor bo'ladi! (Translation coming soon!)`;
-    document.body.appendChild(banner);
-    setTimeout(() => banner.remove(), 5000);
-  }
-
-  // 5. Uzbek UI tweaks: Swap sidebar titles via fetch og:title (delayed, safe, cached)
-  if (currentLang === "uz") {
-    // Swap page title safely
-    const ogTitle = document.querySelector('meta[property="og:title"]')?.content;
-    if (ogTitle) document.title = ogTitle;
-
-    // Delay for sidebar DOM (1s), then swap with cache
-    setTimeout(() => {
-      const titleCache = new Map(); // Cache to avoid re-fetch
-      document.querySelectorAll(".tree-item a, .nav-link a, .sidebar a, .file-tree a").forEach(async (link) => {
-        if (!link.href || link.href === window.location.href || titleCache.has(link.href)) return;
-        
-        try {
-          const response = await fetch(link.href);
-          if (!response.ok) return;
-
-          const text = await response.text();
-          const parser = new DOMParser();
-          const doc = parser.parseFromString(text, "text/html");
-          const uzTitle = doc.querySelector('meta[property="og:title"]')?.content || link.textContent;
-
-          if (uzTitle && uzTitle !== link.textContent) {
-            link.textContent = uzTitle;
-            titleCache.set(link.href, uzTitle); // Cache hit
-          }
-        } catch (error) {
-          console.error("Sidebar title swap failed for", link.href, error);
-        }
-      });
-    }, 1000); // 1s delay for full DOM load
-  }
-});
-</script>
