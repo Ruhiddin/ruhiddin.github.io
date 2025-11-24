@@ -1,7 +1,7 @@
 <style>
 .lang-switcher {
   position: fixed;
-  top: 16px;
+  bottom: 16px;
   right: 24px;
   z-index: 9999;
   display: flex;
@@ -19,9 +19,13 @@
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
+  color: rgba(30, 30, 30, 0.94) !important;
+  background-color: white !important;
+  font-weight: bold
 }
 .lang-switcher button.active {
-  background: #0066ff;
+  color: white !important;
+  background: #0066ff !important;
   color: white;
 }
 .lang-switcher button:hover:not(.active) {
