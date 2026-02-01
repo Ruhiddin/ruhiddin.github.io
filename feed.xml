@@ -3,7 +3,7 @@
     <title>Ruhiddin the BITHERD</title>
     <link href="https://Ruhiddin.github.io//feed.xml" rel="self" //>
     <link href="https://Ruhiddin.github.io/" //>
-    <updated>2026-02-01T11:18:06Z</updated>
+    <updated>2026-02-01T16:29:48Z</updated>
     <id>https://Ruhiddin.github.io/</id>
         <entry>
             <title>
@@ -48,6 +48,19 @@
                 
             </content>
             <link href="https://Ruhiddin.github.io//home-page-uz/" //>
+        </entry>
+        <entry>
+            <title>
+                Home Page.ru
+                
+            </title>
+            <updated>2026-02-01T16:29:17.797Z</updated>
+            <id>https://Ruhiddin.github.io//home-page-ru/</id>
+            <content type="html">
+                &lt;p&gt;DOM&lt;/p&gt;
+
+            </content>
+            <link href="https://Ruhiddin.github.io//home-page-ru/" //>
         </entry>
         <entry>
             <title>
